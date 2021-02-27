@@ -44,8 +44,9 @@ float circle(vec2 pt, vec2 center, float radius, float edge_thickness) {
 
 
 vec3 randomizeColor (vec3 color) {
+  color = clamp(color, 0.0, 1.0);
 	color.r = color.r + randc(vPosition.xy + sin(u_time));
-	color.g = color.g + randc(vPosition.xy + sin(u_time * 5.2));
+	color.g = color.g + randc(vPosition.xy + sin(u_time * 3.2));
 	color.b = color.b + randc(vPosition.xy + sin(u_time * 1.4));
 	return color;
 }
@@ -57,19 +58,18 @@ void main (void) {
   float circle2 = circle(position, vec2(0.03, 0.1), 0.29, 0.25);
   float circle3 = circle(position, vec2(0.02, 0.18), 0.3, 0.25);
 
-  vec3 color1 = vec3(0.2, 0.4, 0.85) * circle1;
-  color1 = 0.28 - color1;
+  vec3 color1 = vec3(0.4, 0.4, 0.8) * circle1;
+  color1 = color1 / 3.0;
 
-  vec3 color2 = vec3(0.75, 0.3, 0.6) * circle2;
-  color2 = 1.0 - color2;
+  vec3 color2 = vec3(0.8, 0.3, 0.05) * circle2;
+  color2 = color2;
 
-  vec3 color3 = vec3(0.9, 0.9, 0.9) * circle3;
-  color3 = 1.0 - color3;
+  vec3 color3 = vec3(0.5, 0.7, 0.6) * circle3;
+  color3 = color3;
 
-
-  color1 = randomizeColor(color1);
-  color2 = randomizeColor(color2);
-  color3 = randomizeColor(color3);
-
-  gl_FragColor = vec4((color1 * color2 * color3 - color1) * -50.0, 1.0); 
+  color1 = randomizeColor(clamp(color1, 0.0, 1.0));
+  color2 = randomizeColor(clamp(color2, 0.0, 1.0));
+  color3 = randomizeColor(clamp(color3, 0.0, 1.0));
+  vec3 color = ((color1 * color2 / color3) - (color1 / 5.0)) * 10.0;
+  gl_FragColor = clamp(vec4(color, 1.0), 0.0, 1.0); 
 }
