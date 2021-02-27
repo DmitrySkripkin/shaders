@@ -1,3 +1,5 @@
+#include <noise>
+uniform float u_time;
 varying vec3 vPosition;
 void main () {
 	vPosition = position;
