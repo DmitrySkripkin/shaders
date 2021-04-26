@@ -10,6 +10,7 @@ const loadFile = async (file, key) => { // Load external files as strings
 
 const initScene = () => { // Init ThreeJS scene
   const scene = new THREE.Scene();
+  window.scene = scene;
   const camera = new THREE.PerspectiveCamera( -1, 1, 1, -1, 0.1, 10 );
   camera.position.z = 100;
   const renderer = new THREE.WebGLRenderer();
@@ -17,8 +18,8 @@ const initScene = () => { // Init ThreeJS scene
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
   const clock = new THREE.Clock();
-  const geometry = new THREE.PlaneBufferGeometry( SIZE, SIZE, RESOLUTION, RESOLUTION );
-
+  // const geometry = new THREE.BoxGeometry( SIZE, SIZE, SIZE, 1, RESOLUTION, 1 );
+  const geometry = new THREE.PlaneGeometry( SIZE, SIZE, RESOLUTION, RESOLUTION );
   const uniforms = {
     u_time: { value: 0.0 }
   }
@@ -26,10 +27,12 @@ const initScene = () => { // Init ThreeJS scene
   const material = new THREE.ShaderMaterial({
     uniforms,
     vertexShader: resources['empty.vert'],
-    fragmentShader: resources['circle.frag'],
+    fragmentShader: resources['noisemix.frag'],
+    // wireframe: true
   });
 
   const plane = new THREE.Mesh( geometry, material );
+  window.plane = plane;
   scene.add( plane );
 
   onWindowResize();
@@ -64,7 +67,7 @@ const initScene = () => { // Init ThreeJS scene
 
 const initResources = async () => { // Load all resources
   await loadFile('./shaders/empty.vert');
-  await loadFile('./shaders/circle.frag');
+  await loadFile('./shaders/noisemix.frag');
 };
 
 
@@ -74,3 +77,17 @@ const init = async () => {
 };
 
 init();
+
+window.export = (mesh) => {
+  plane.scale.y = plane.scale.z = plane.scale.x = 0.1;
+  for (let v of plane.geometry.vertices) {
+      // v.x = v.x + (noise.perlin3(v.x, v.y, v.z) / 3.0);
+      // v.y = v.y + (noise.perlin3(v.x, v.y, v.z) / 3.0);
+      if (v.z > 1) v.z = noise.perlin3(v.x * 2, v.y * 2, v.z * 2) / 3.0;
+  }
+  plane.geometry.verticesNeedUpdate = true;
+  const bufferMesh = new THREE.Mesh(new THREE.BufferGeometry().fromGeometry(mesh.geometry));
+  window.scene.add(bufferMesh);
+  const exporter = new THREE.STLExporter();
+  return exporter.parse( bufferMesh, { binary: false } )
+}
