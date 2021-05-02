@@ -29,5 +29,5 @@
     color.r = vec3(color.r +rand(positionT)).r;
     color.b = vec3(color.r - (cnoise(positionT) * 1.2)).r;
     color = color - (cnoise(positionT / 10.0));
-    gl_FragColor = vec4(randomizeColor(color) + (rand(positionT) / 2.0), 1.0);
+    gl_FragColor = vec4(randomizeColor(color) + (rand(position) / 2.0), 1.0);
   }
