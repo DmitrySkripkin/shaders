@@ -53,7 +53,7 @@ const initScene = () => { // Init ThreeJS scene
   const material = new THREE.ShaderMaterial({
     uniforms,
     vertexShader: resources['empty.vert'],
-    fragmentShader: resources['lines.frag'],
+    fragmentShader: resources['sochi.frag'],
     // wireframe: true
   });
 
@@ -192,7 +192,7 @@ for (let i = 0; i < 5000; i++) {
 
 const initResources = async () => { // Load all resources
   await loadFile('./shaders/empty.vert');
-  await loadFile('./shaders/lines.frag');
+  await loadFile('./shaders/sochi.frag');
 };
 
 
