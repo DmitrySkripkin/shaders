@@ -47,9 +47,9 @@ void main (void) {
       color2 += vec3(0.28072520896038555, 0.6140134809418756, 0.5258182737338032) * circle(position.xy + 0.1, center, 0.16, 0.1);
       color3 += vec3(0.47020856092037067, 0.7238028823444491, 0.4704412500767928) * circle(position.xy + 0.2, center, 0.17, 0.1);
       color4 += vec3(0.729479560689575, 0.766664420943253, 0.5365999945736162) * circle(position.xy, center, 0.18, 0.1);
-      center.x += 0.45 + (cnoise(position.xy * u_time) / 1.0);
+      center.x += 0.45 + (cnoise(position.xy + u_time) / 1.0);
     }
-    center.y += 0.45 + (cnoise(position.xy * u_time) / 1.0);
+    center.y += 0.45 + (cnoise(position.xy + u_time) / 1.0);
   }
   // vec3 a[4];
   // a[0] = color1;
