@@ -18,6 +18,8 @@ vec3 randomizeColor (vec3 color, float r) {
 }
 
 float circle(vec2 pt, vec2 center, float radius, float edge_thickness) {
+  // center.x = center.x + (cnoise(pt + u_time) / 20.0);
+  // center.y = center.y + (cnoise(pt - u_time) / 20.0);
   vec2 p = pt - center;
   float len = length(p);
   radius = radius + cnoise(pt * 1.5 + u_time) / 20.0;
@@ -34,23 +36,28 @@ vec3 mixColors(vec3 colors[4]) {
 
 void main (void) {
   vec3 position = vPosition;
-  vec2 _center = vec2(-0.55, -0.55);
+  vec2 _center = vec2(-0.55, -1.55);
   vec2 center = _center;
   vec3 color1 = vec3(0.0);
   vec3 color2 = vec3(0.0);
   vec3 color3 = vec3(0.0);
   vec3 color4 = vec3(0.0);
+  float time = u_time / 2.0;
   for (int i = 0; i < 5; i++) {
     center.x = _center.x;
     for (int j = 0; j < 5; j++) {
-      color1 += vec3(0.23302341635537208, 0.424014939415586, 0.5600182465419986) * circle(position.xy, center, 0.15, 0.1);
-      color2 += vec3(0.28072520896038555, 0.6140134809418756, 0.5258182737338032) * circle(position.xy + 0.1, center, 0.16, 0.1);
-      color3 += vec3(0.47020856092037067, 0.7238028823444491, 0.4704412500767928) * circle(position.xy + 0.2, center, 0.17, 0.1);
-      color4 += vec3(0.729479560689575, 0.766664420943253, 0.5365999945736162) * circle(position.xy, center, 0.18, 0.1);
-      center.x += 0.45 + (cnoise(position.xy + u_time) / 1.0);
+      color1 += vec3(0.93302341635537208, 0.424014939415586, 0.5600182465419986) * circle(position.xy, center, 0.2, 0.1);
+      color2 += vec3(0.28072520896038555, 0.6140134809418756, 0.5258182737338032) * circle(position.xy + 0.1, center, 0.15, 0.1);
+      color3 += vec3(0.47020856092037067, 0.7238028823444491, 0.4704412500767928) * circle(position.xy + 0.2, center, 0.1, 0.1);
+      color4 += vec3(0.729479560689575, 0.766664420943253, 0.5365999945736162) * circle(position.xy + 0.3, center, 0.1, 0.1);
+      center.x += 0.5;
     }
-    center.y += 0.45 + (cnoise(position.xy + u_time) / 1.0);
+    vec2 pos = position.xy * cnoise(position.xy + time);
+    pos.x = pos.x + randc(position.xy + sin(time), 2.5) + time;
+    pos.y = pos.y + randc(position.xy + sin(time), 2.5) + (time / 3.5);
+    center.y += 0.45 + cnoise(pos * 1.2 + time) + 0.5;// * atan(cnoise(position.xy + u_time));
   }
+
   // vec3 a[4];
   // a[0] = color1;
   // a[1] = color2;
@@ -64,5 +71,9 @@ void main (void) {
   // } else {
   //   gl_FragColor = vec4(vec3(1.0) - randomizeColor(color3, 1.5), 1.0);
   // }
-  gl_FragColor = vec4(randomizeColor(color1 + color2 + color3 - color4, 2.5) , 1.0);
+  // if (fract(gl_FragCoord.x / 2.0) < 0.4) {
+    gl_FragColor =  vec4(vec3(1.0) - randomizeColor(color1 - color2 + color3 + color4, 1.5) * (cos(length(position.xy) * 3.0) * 4.0) + length(position.xy), 1.0);
+  // } else {
+  //   gl_FragColor = vec4(color1 + color2 + color3 - color4, 1.0);
+  // }
 }

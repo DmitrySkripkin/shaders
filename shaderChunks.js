@@ -8,6 +8,8 @@ THREE.ShaderChunk.simple_lambert_vertex = `
 `
 
 THREE.ShaderChunk.noise = `
+	#define PI 3.14159265359
+	#define TWO_PI 6.28318530718
 	//
 	// Description : Array and textureless GLSL 2D/3D/4D simplex 
 	//               noise functions.

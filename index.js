@@ -11,7 +11,7 @@ const cubehelix = chroma.cubehelix()
 
 
 const SIZE = 2;
-const RESOLUTION = 100;
+const RESOLUTION = 128;
 const canvasSize = 64;
 window.resources = {};
 const loadFile = async (file, key) => { // Load external files as strings
@@ -46,6 +46,7 @@ const initScene = () => { // Init ThreeJS scene
   // const geometry = new THREE.BoxGeometry( SIZE, SIZE, SIZE, 1, RESOLUTION, 1 );
   const geometry = new THREE.PlaneGeometry( SIZE, SIZE, RESOLUTION, RESOLUTION );
   const uniforms = {
+    u_resolution: { value: new THREE.Vector2(document.body.offsetWidth, document.body.offsetHeight) },
     u_time: { value: 0.0 },
     u_texture: { value: window.texture,type: 't' }, // float array (vec3)
   }
@@ -53,7 +54,7 @@ const initScene = () => { // Init ThreeJS scene
   const material = new THREE.ShaderMaterial({
     uniforms,
     vertexShader: resources['empty.vert'],
-    fragmentShader: resources['sochi.frag'],
+    fragmentShader: resources['fire.frag'],
     // wireframe: true
   });
 
@@ -86,6 +87,7 @@ const initScene = () => { // Init ThreeJS scene
   }
   function animate() {
     uniforms.u_time.value += clock.getDelta();
+
     // if (processDt < uniforms.u_time.value - 1) {
       // processDt = uniforms.u_time.value;
       // requestAnimationFrame(() => {
@@ -192,7 +194,7 @@ for (let i = 0; i < 5000; i++) {
 
 const initResources = async () => { // Load all resources
   await loadFile('./shaders/empty.vert');
-  await loadFile('./shaders/sochi.frag');
+  await loadFile('./shaders/fire.frag');
 };
 
 

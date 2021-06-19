@@ -2,15 +2,17 @@
 varying vec2 vUv;
 varying vec3 displacedNormal;
 varying vec3 vPosition;
+varying vec3 height;
 varying float n;
 uniform float u_time;
+
 void main () {
   vPosition = position;
-  float mp = 30.0;
-  vec2 st = uv;
+  float mp = 0.8;
+  vec2 st = position.xy;
   // Scale the coordinate system to see
   // some noise in action
-  vec3 pos = vec3(st * 11.0, 1.0);
+  vec3 pos = vec3(st, 1.0);
   float time = u_time / 4.0;
   pos.y -= time + sin(time);
   pos.x -= time  + cos(time);
@@ -24,6 +26,7 @@ void main () {
   vec3 displacedNeighbour2 = neighbour2 + normal * cnoise(vec3(neighbour2.xy, 1.0));
   vec3 tangent = displacedNeighbour1 - displaced;
   vec3 bitangent = displacedNeighbour2 - displaced;
-  displacedNormal = (cross(tangent, bitangent));
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, n, 1.0);
+  displacedNormal = normalize(cross(tangent, bitangent));
+  height = vec3(0.0, 0.0, position.z);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, position.z + n, 1.0);
 }
